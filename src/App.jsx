@@ -1,18 +1,28 @@
 import { useEffect, useState } from "react";
 
 function App() {
-  const [enable, setEnable] = useState(false);
+  const [enabled, setEnabledd] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    console.log("efecto", { enable });
+    console.log("efecto", { enabled });
 
     const handleMove = (e) => {
       const { clientX, clientY } = e;
       console.log("handle Move:", { clientX, clientY });
+      setPosition({ x: clientX, y: clientY });
     };
 
-    addEventListener("mousemove", handleMove);
-  }, [enable]);
+    if (enabled) {
+      addEventListener("pointermove", handleMove);
+    }
+
+    // limpieza de efectos anteriores (componentWillUnmount)(desmontaje)
+    return () => {
+      console.log("limpieza");
+      removeEventListener("pointermove", handleMove);
+    };
+  }, [enabled]);
 
   return (
     <>
@@ -28,11 +38,11 @@ function App() {
           position: "absolute",
           top: -20,
           left: -20,
-          transform: "translate(0px, 0px)",
+          transform: `translate(${position.x}px, ${position.y}px)`,
         }}
       ></div>
-      <button onClick={() => setEnable(!enable)}>
-        {enable ? "Activar" : "Desactivar"} seguimineto
+      <button onClick={() => setEnabledd(!enabled)}>
+        {enabled ? "Desactivar" : "Activar"} seguimineto
       </button>
     </>
   );
